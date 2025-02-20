@@ -180,3 +180,159 @@ WHERE salary > 50000;
 
 SELECT DISTINCT (occupation)
 FROM salary;
+
+
+# 16.	Retrieve the full names, occupations, and salaries of all employees.
+
+SELECT 
+	CONCAT(first_name, " ", last_name) full_name, 
+    occupation, 
+    salary
+FROM salary;
+
+
+# 17.	Find employees who work in the 'Information and Technology' department.
+
+SELECT 
+	first_name,
+    last_name,
+    department_name
+FROM salary s
+JOIN jcen_departments jd
+	ON s.dept_id = jd.department_id
+WHERE department_name = "Information and technology";
+
+
+# 18.	Get employees' department names along with their salaries.
+
+SELECT 
+	department_name,
+    salary
+FROM salary s
+JOIN jcen_departments jd
+	ON s.dept_id = jd.department_id
+ORDER BY department_name DESC;
+
+
+# 19.	Show employees who do not have a department assigned (NULL values in dept_id).
+
+SELECT *
+FROM salary s
+JOIN jcen_departments jd
+	ON s.dept_id = jd.department_id
+WHERE department_name IS NULL;
+
+
+# 20.	Find employees and their corresponding birth dates along with their salaries.
+
+SELECT 
+	CONCAT(e.first_name, " ", e.last_name) full_name,
+    e.birth_date,
+    s.salary
+FROM employees e
+JOIN salary s
+	ON e.employee_id = s.employee_id;
+    
+
+# 21.	Count the total number of male employees.
+
+SELECT 
+	gender, 
+	COUNT(gender) total_male
+FROM employees
+WHERE gender = "Male"
+GROUP BY gender;
+
+
+# 22.	Find the total number of employees in each department.
+
+SELECT 
+	department_name,
+	COUNT(department_name) department_by_count
+FROM salary s
+JOIN jcen_departments jd
+	ON s.dept_id = jd.department_id
+GROUP BY department_name;
+
+
+# 23.	Retrieve the youngest and oldest employee from the database.
+
+(SELECT *
+FROM employees
+ORDER BY age ASC
+LIMIT 1)
+UNION
+(SELECT *
+FROM employees
+ORDER BY age DESC
+LIMIT 1);
+
+
+# 24.	Get the total salary being paid to all employees.
+
+SELECT
+	sum(salary) sum_of_salary
+FROM salary;
+
+
+# 25.	Show the department with the highest number of employees.
+
+SELECT 
+	department_name,
+    COUNT(department_name) total_number
+FROM salary s
+JOIN jcen_departments jd
+	ON s.dept_id = jd.department_id
+GROUP BY department_name
+ORDER BY department_name DESC
+LIMIT 1;
+
+
+# 26.	Find employees who have the same first name.
+
+SELECT 
+	first_name, 
+	COUNT(*) same_first_name
+FROM employees
+GROUP BY first_name
+HAVING COUNT(*) < 1;
+# No employees has the same first_name.....
+
+
+# 27.	Retrieve employees whose salaries are below the company’s average salary.
+
+SELECT *
+FROM salary
+WHERE salary < (
+		SELECT AVG(salary)  average_salary
+		FROM salary);
+        
+
+# 28.	Count how many employees have each occupation.
+
+SELECT 
+	occupation, 
+    COUNT(*) count 
+FROM salary
+GROUP BY occupation;
+
+
+# 29.	Show all employees grouped by gender, along with the number of employees in each gender.
+
+SELECT 
+	gender, 
+    COUNT(gender) gender_count
+FROM employees
+GROUP BY gender;
+
+
+# 30.	Find the department(s) where the total salary is above $150,000.
+
+SELECT 
+	department_name,
+	SUM(salary) total_salary
+FROM salary s
+JOIN jcen_departments jd
+	ON s.dept_id = jd.department_id
+GROUP BY department_name
+HAVING SUM(salary) > 150000;
